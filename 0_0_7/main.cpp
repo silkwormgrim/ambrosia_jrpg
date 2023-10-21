@@ -5,6 +5,27 @@
 
 #include <iostream>
 
+struct CURSOR {
+	int x = 0;
+	int y = 0;
+	
+	int list[8][2] = {
+		{416,32},
+		{416,32*2},
+		{416,32*3},
+		{416,32*4},
+		{416,32*5},
+		{416,32*6},
+		{416,32*7},
+		{416,32*8},
+	};	
+
+	int selector = 0;
+	int max = 7;
+	
+	bool visible = true;	
+} cursor;
+
 struct VIDEO {
 	const int screen_width = 640;
 	const int screen_height = 480;
@@ -13,6 +34,10 @@ struct VIDEO {
 	sf::Event event;
 	sf::Font font;
 	sf::Time last_time;
+	sf::Texture texture_1;
+	sf::Texture texture_2;
+	sf::Texture texture_3;
+	sf::Texture texture_4;
 
 	VIDEO();
 	~VIDEO();
@@ -20,13 +45,13 @@ struct VIDEO {
 	void poll_events();
 	void render();
 	void render_grid(int size);
-	void render_re_menu();
-	void render_ff_menu();
 	
-	sf::Texture texture_1;
-	sf::Texture texture_2;
-	sf::Texture texture_3;
-	sf::Texture texture_4;
+	void render_cursor();
+	
+	void render_menu_1();
+	void render_menu_1_cluster_1();
+	void render_menu_1_cluster_2();
+	
 } video;
 
 VIDEO :: VIDEO() {
@@ -53,8 +78,43 @@ void VIDEO :: poll_events(){
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 				window.close();
 			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+				cursor.x -= 32;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+				cursor.x += 32;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+				cursor.y -= 32;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+				cursor.y += 32;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
+				cursor.selector--;
+				if (cursor.selector < 0) {
+					cursor.selector = cursor.max;
+				}
+				cursor.x = cursor.list[cursor.selector][0];
+				cursor.y = cursor.list[cursor.selector][1];
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::X)) {
+				cursor.selector++;
+				if (cursor.selector > cursor.max) {
+					cursor.selector = 0;
+				}
+				cursor.x = cursor.list[cursor.selector][0];
+				cursor.y = cursor.list[cursor.selector][1];
+			}
+			std::cout << "[CURSOR]: " << cursor.x << ',' << cursor.y << '\n';
 		}
 	}
+};
+
+void VIDEO :: render(){
+	render_grid(32);
+	render_menu_1();
+	render_cursor();
 };
 
 void VIDEO :: render_grid(int size) {
@@ -73,110 +133,170 @@ void VIDEO :: render_grid(int size) {
 			window.draw(line_horz,  2, sf::Lines);
 		}
 	}
-
+	/*
 	for (int i = 0; i < screen_width; i+=size/2) { 
 		for (int j = 0; j < screen_height; j+=size/2) {
 			sf::Vertex point(sf::Vector2f(i,j), sf::Color::White);
 			window.draw(&point, 1, sf::Points);
-		};
-	};
-}
-
-void VIDEO :: render(){
-	render_grid(32);
-	render_ff_menu();
+		}
+	}
+	*/
 };
 
-void VIDEO :: render_ff_menu(){
+void VIDEO :: render_menu_1(){
+	render_menu_1_cluster_1();
+	render_menu_1_cluster_2();
+};
+
+void VIDEO :: render_menu_1_cluster_1(){
+	int x = 32;
+	int y = 32;
+
+	sf::RectangleShape rect_1(sf::Vector2f(32*5,32*1));
+	rect_1.setTexture(&texture_3);
+	rect_1.setPosition(x+32*13,y);
+	window.draw(rect_1);
+	
+	sf::Text text_1;
+	text_1.setFont(font);
+	text_1.setString("Item");
+	text_1.setCharacterSize(24);
+	text_1.setFillColor(sf::Color::White);
+	text_1.setPosition(x+32*13,y);
+	window.draw(text_1);
+
+	sf::RectangleShape rect_2(sf::Vector2f(32*5,32*1));
+	rect_2.setTexture(&texture_3);
+	rect_2.setPosition(x+32*13,y+32*1);
+	window.draw(rect_2);
+
+	sf::Text text_2;
+	text_2.setFont(font);
+	text_2.setString("Equipment");
+	text_2.setCharacterSize(24);
+	text_2.setFillColor(sf::Color::White);
+	text_2.setPosition(x+32*13,y+32*1);
+	window.draw(text_2);
+
+	sf::RectangleShape rect_3(sf::Vector2f(32*5,32*1));
+	rect_3.setTexture(&texture_3);
+	rect_3.setPosition(x+32*13,y+32*2);
+	window.draw(rect_3);
+
+	sf::Text text_3;
+	text_3.setFont(font);
+	text_3.setString("Status");
+	text_3.setCharacterSize(24);
+	text_3.setFillColor(sf::Color::White);
+	text_3.setPosition(x+32*13,y+32*2);
+	window.draw(text_3);
+
+	sf::RectangleShape rect_4(sf::Vector2f(32*5,32*1));
+	rect_4.setTexture(&texture_3);
+	rect_4.setPosition(x+32*13,y+32*3);
+	window.draw(rect_4);
+
+	sf::Text text_4;
+	text_4.setFont(font);
+	text_4.setString("Save");
+	text_4.setCharacterSize(24);
+	text_4.setFillColor(sf::Color::White);
+	text_4.setPosition(x+32*13,y+32*3);
+	window.draw(text_4);
+
+	sf::RectangleShape rect_5(sf::Vector2f(32*5,32*1));
+	rect_5.setTexture(&texture_3);
+	rect_5.setPosition(x+32*13,y+32*4);
+	window.draw(rect_5);
+
+	sf::Text text_5;
+	text_5.setFont(font);
+	text_5.setString("Quit");
+	text_5.setCharacterSize(24);
+	text_5.setFillColor(sf::Color::White);
+	text_5.setPosition(x+32*13,y+32*4);
+	window.draw(text_5);
+
+	sf::RectangleShape rect_6(sf::Vector2f(32*5,32*1));
+	rect_6.setTexture(&texture_3);
+	rect_6.setPosition(x+32*13,y+32*5);
+	window.draw(rect_6);
+
+	sf::RectangleShape rect_7(sf::Vector2f(32*5,32*1));
+	rect_7.setTexture(&texture_3);
+	rect_7.setPosition(x+32*13,y+32*6);
+	window.draw(rect_7);
+
+	sf::RectangleShape rect_8(sf::Vector2f(32*5,32*1));
+	rect_8.setTexture(&texture_3);
+	rect_8.setPosition(x+32*13,y+32*7);
+	window.draw(rect_8);
+};
+
+void VIDEO :: render_menu_1_cluster_2(){
+	int x = 32;
+	int y = 32;
+
 	sf::RectangleShape rect_1(sf::Vector2f(32*12,32*3));
 	rect_1.setTexture(&texture_3);
-	rect_1.setPosition(16,16);
+	rect_1.setPosition(x,y);
 	window.draw(rect_1);
+
+	sf::Text text_1;
+	text_1.setFont(font);
+	text_1.setString("Player_1");
+	text_1.setCharacterSize(24);
+	text_1.setFillColor(sf::Color::White);
+	text_1.setPosition(x,y);
+	window.draw(text_1);
+
+	sf::RectangleShape rect_2(sf::Vector2f(32*12,32*3));
+	rect_2.setTexture(&texture_3);
+	rect_2.setPosition(x,y+32*3);
+	window.draw(rect_2);
+
+	sf::Text text_2;
+	text_2.setFont(font);
+	text_2.setString("Player_2");
+	text_2.setCharacterSize(24);
+	text_2.setFillColor(sf::Color::White);
+	text_2.setPosition(x,y+32*3);
+	window.draw(text_2);
 
 	sf::RectangleShape rect_3(sf::Vector2f(32*12,32*3));
 	rect_3.setTexture(&texture_3);
-	rect_3.setPosition(16,16+32*3);
+	rect_3.setPosition(x,y+32*6);
 	window.draw(rect_3);
+
+	sf::Text text_3;
+	text_3.setFont(font);
+	text_3.setString("Player_3");
+	text_3.setCharacterSize(24);
+	text_3.setFillColor(sf::Color::White);
+	text_3.setPosition(x,y+32*6);
+	window.draw(text_3);
 
 	sf::RectangleShape rect_4(sf::Vector2f(32*12,32*3));
 	rect_4.setTexture(&texture_3);
-	rect_4.setPosition(16,16+32*6);
+	rect_4.setPosition(x,y+32*9);
 	window.draw(rect_4);
 
-	sf::RectangleShape rect_5(sf::Vector2f(32*12,32*3));
-	rect_5.setTexture(&texture_3);
-	rect_5.setPosition(16,16+32*9);
-	window.draw(rect_5);
-
-	sf::RectangleShape rect_2(sf::Vector2f(32*5,32*10));
-	rect_2.setTexture(&texture_3);
-	rect_2.setPosition(16+32*14,16);
-	window.draw(rect_2);
+	sf::Text text_4;
+	text_4.setFont(font);
+	text_4.setString("Player_4");
+	text_4.setCharacterSize(24);
+	text_4.setFillColor(sf::Color::White);
+	text_4.setPosition(x,y+32*9);
+	window.draw(text_4);
 };
 
-void VIDEO :: render_re_menu(){
-	sf::RectangleShape rect_1(sf::Vector2f(32*3,32*3));
-	rect_1.setTexture(&texture_1);
-	rect_1.setPosition(16,16);
-	window.draw(rect_1);
-
-	sf::RectangleShape rect_2(sf::Vector2f(32*7,32*3));
-	rect_2.setTexture(&texture_2);
-	rect_2.setPosition(16+32*3+16,16);
-	window.draw(rect_2);
-	
-	sf::RectangleShape rect_3(sf::Vector2f(32*8,32*3));
-	//rect_3.setFillColor(sf::Color::Black);
-	rect_3.setTexture(&texture_3);
-	rect_3.setPosition(16+32*11,16);
-	window.draw(rect_3);
-
-	sf::RectangleShape rect_4(sf::Vector2f(32*12,32*11));
-	//rect_4.setFillColor(sf::Color::Black);
-	rect_4.setTexture(&texture_3);
-	rect_4.setPosition(16,32*3+16+8);
-	window.draw(rect_4);
-
-	sf::RectangleShape rect_5(sf::Vector2f(32*6+16,32*11));
-	rect_5.setFillColor(sf::Color::Black);
-	rect_5.setPosition(32*12+32,32*3+16+8);
-	window.draw(rect_5);
-
-	sf::RectangleShape rect_6(sf::Vector2f(32*3,32*3));
-	//rect_6.setFillColor(sf::Color::Blue);
-	rect_6.setTexture(&texture_4);
-	rect_6.setPosition(32*12+32,32*3+16+8);
-	window.draw(rect_6);
-
-	sf::RectangleShape rect_7(sf::Vector2f(32*3,32*3));
-	//rect_7.setFillColor(sf::Color::White);
-	rect_7.setTexture(&texture_3);
-	rect_7.setPosition(32*12+32+32*3,32*3+16+8);
-	window.draw(rect_7);
-
-	sf::RectangleShape rect_8(sf::Vector2f(32*3,32*3));
-	//rect_8.setFillColor(sf::Color::White);
-	rect_8.setTexture(&texture_3);
-	rect_8.setPosition(32*12+32,32*3+16+8+32*3);
-	window.draw(rect_8);
-
-	sf::RectangleShape rect_9(sf::Vector2f(32*3,32*3));
-	//rect_9.setFillColor(sf::Color::Blue);
-	rect_9.setTexture(&texture_3);
-	rect_9.setPosition(32*12+32+32*3,32*3+16+8+32*3);
-	window.draw(rect_9);
-
-	sf::RectangleShape rect_10(sf::Vector2f(32*3,32*3));
-	//rect_10.setFillColor(sf::Color::Blue);
-	rect_10.setTexture(&texture_3);
-	rect_10.setPosition(32*12+32,32*3+16+8+32*6);
-	window.draw(rect_10);
-
-	sf::RectangleShape rect_11(sf::Vector2f(32*3,32*3));
-	//rect_11.setFillColor(sf::Color::White);
-	rect_11.setTexture(&texture_3);
-	rect_11.setPosition(32*12+32+32*3,32*3+16+8+32*6);
-	window.draw(rect_11);
+void VIDEO :: render_cursor(){
+	if (cursor.visible) {
+		sf::RectangleShape rect(sf::Vector2f(32,32));
+		rect.setFillColor(sf::Color::White);
+		rect.setPosition(cursor.x,cursor.y);
+		window.draw(rect);
+	}
 };
 
 int main(int argc, char* argv[]) {
@@ -189,12 +309,12 @@ int main(int argc, char* argv[]) {
 
 	while (video.window.isOpen()) {
 		sf::Time time = clock.getElapsedTime();
-		int desired_framerate = 1;
+		int desired_framerate = 30;
 		double delta = time.asMilliseconds() - video.last_time.asMilliseconds();
 
-		if (delta >= 1000*3 / desired_framerate){
-			std::cout << video.last_time.asMilliseconds() << ' ' << time.asMilliseconds() << '\n';
-			video.last_time = clock.getElapsedTime();
+		if (delta >= 1000 / desired_framerate){
+			//std::cout << video.last_time.asMilliseconds() << ' ' << time.asMilliseconds() << '\n';
+			video.last_time = time;
 
 			video.window.clear();
 			video.render();
