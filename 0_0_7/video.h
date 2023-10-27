@@ -37,7 +37,13 @@ void VIDEO :: render_cursor(){
 		rect.setPosition(cursor.x,cursor.y);
 		window.draw(rect);
 	}
-};
+
+	if (cursor.visible_2) {
+		sf::RectangleShape rect(sf::Vector2f(32,32));
+		rect.setFillColor(sf::Color::White);
+		rect.setPosition(cursor.x_2,cursor.y_2);
+		window.draw(rect);
+	}};
 
 void VIDEO :: poll_events(){
 	while (window.pollEvent(event)) {

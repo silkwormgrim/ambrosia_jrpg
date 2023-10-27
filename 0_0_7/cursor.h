@@ -2,9 +2,6 @@
 #define CURSOR_H
 
 struct CURSOR {
-	int x = 0;
-	int y = 0;
-	
 	int list[8][2] = {
 		{416,32},
 		{416,32*2},
@@ -16,10 +13,24 @@ struct CURSOR {
 		{416,32*8},
 	};
 
-	int selector = 0;
-	int max = 7;
-	
+	int x = list[0][0];
+	int y = list[0][1];
 	bool visible = true;
+	int selector = 0;
+	const int max = 7;
+
+	int list_2[4][2] = {
+		{0,32},
+		{0,128},
+		{0,224},
+		{0,320}
+	};
+
+	int x_2 = list_2[0][0];
+	int y_2 = list_2[0][1];
+	bool visible_2 = false;
+	int selector_2 = 0;
+	const int max_2 = 3;
 
 	CURSOR();
 	
@@ -30,36 +41,15 @@ struct CURSOR {
 } cursor;
 
 CURSOR :: CURSOR() {
-	/*
-	cursor.x = cursor.list[0][0];
-	cursor.y = cursor.list[0][1];
-
-	cursor_2.visible = false;
-
-	cursor_2.list[0][0] = 0;
-	cursor_2.list[0][1] = 32;
-
-	cursor_2.list[1][0] = 0;
-	cursor_2.list[1][1] = 128;
-
-	cursor_2.list[2][0] = 0;
-	cursor_2.list[2][1] = 224;
-
-	cursor_2.list[3][0] = 0;
-	cursor_2.list[3][1] = 320;
-
-	cursor_2.max = 3;
-
-	cursor_2.x = cursor_2.list[0][0];
-	cursor_2.y = cursor_2.list[0][1];
-	*/
 	reset();
 };
 
 void CURSOR :: move(char direction){
 	std::cout << "[CURSOR]: " << x << ',' << y << '\n';
+	std::cout << "[CURSOR_2]: " << x_2 << ',' << y_2 << '\n';
 	std::cout << "[SELECTOR]: " << selector << '\n';
 
+	if (visible_2 == false){
 	switch (direction){
 		case 'f':
 			selector++;
@@ -78,9 +68,39 @@ void CURSOR :: move(char direction){
 			y = list[selector][1];
 		break;
 	}
+	}
+	
+	if (visible_2 == true){
+	switch (direction){
+		case 'f':
+			selector_2++;
+			if (selector_2 > max_2) {
+				selector_2 = 0;
+			}
+			x_2 = list_2[selector_2][0];
+			y_2 = list_2[selector_2][1];
+		break;
+		case 'b':
+			selector_2--;
+			if (selector_2 < 0) {
+				selector_2 = max_2;
+			}
+			x_2 = list_2[selector_2][0];
+			y_2 = list_2[selector_2][1];
+		break;
+	}
+	}
+	
 };
 
 void CURSOR :: activate(){
+	if (visible_2 == true) {
+		visible_2 = false;
+	}
+	else {
+		visible_2 = true;
+	}
+
 	switch(cursor.selector) {
 		case 0:
 			std::cout << "[Selector]: " << "Item" << '\n';
@@ -95,6 +115,7 @@ void CURSOR :: activate(){
 			std::cout << "[Selector]: " << "Save" << '\n';
 			break;
 		case 4:
+			std::cout << "[Selector]: " << " " << '\n';
 			break;
 		case 5:
 			std::cout << "[Selector]: " << " " << '\n';
@@ -104,6 +125,21 @@ void CURSOR :: activate(){
 			break;
 		case 7:
 			std::cout << "[Selector]: " << " " << '\n';
+			break;
+	}
+	
+	switch (cursor.selector_2) {
+		case 0:
+			std::cout << "[Selector]: " << "Player_1" << '\n';
+			break;
+		case 1:
+			std::cout << "[Selector]: " << "Player_2" << '\n';
+			break;
+		case 2:
+			std::cout << "[Selector]: " << "Player_3" << '\n';
+			break;
+		case 3:
+			std::cout << "[Selector]: " << "Player_4" << '\n';
 			break;
 	}
 };
