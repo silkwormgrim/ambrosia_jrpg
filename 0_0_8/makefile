@@ -13,10 +13,10 @@ run:
 	main.exe
 
 main.o: main.cpp
-	g++ -c main.cpp -o main.o -Wall
+	g++ -Wall -c main.cpp -I$(SFML_INCLUDE) -o main.o
 
 video.o: video.cpp
-	g++ -c video.cpp -o video.o -I$(SFML_INCLUDE) -Wall
+	g++ -Wall -c video.cpp -I$(SFML_INCLUDE) -o video.o
 
 main: $(OBJECTS)
 	g++ $(OBJECTS) -o main.exe $(SFML_FULL)

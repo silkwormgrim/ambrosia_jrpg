@@ -1,17 +1,17 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "video.h"
 
-bool silent = true;
-
-void hello_from_function() {
-	sf::Clock clock;
-	sf::Time last_time;
+VIDEO :: VIDEO(){
+	std::cout << "CONSTRUCTOR\n";
 	last_time = clock.getElapsedTime();
-	
-	sf::Event event;
-	
-	sf::RenderWindow window;
-	
+};
+
+VIDEO :: ~VIDEO(){
+	std::cout << "DESTRUCTOR\n";
+};
+
+void VIDEO :: window_loop(){
 	window.create(sf::VideoMode(640, 480), "window");
 	window.clear();
 
@@ -43,6 +43,4 @@ void hello_from_function() {
 			}
 		}
 	}
-
-	window.display();
 };
